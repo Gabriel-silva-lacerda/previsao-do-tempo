@@ -1,7 +1,15 @@
 import React, { useContext } from "react";
 import RequestApi from "../api/RequestApi";
 import AppContext from "../context/AppContext";
-import { FaDroplet, FaWind } from "react-icons/fa6";
+import {
+  FaDroplet,
+  FaWind,
+  FaMagnifyingGlass,
+  FaLocationDot,
+} from "react-icons/fa6";
+
+import "./Index.scss";
+import Loading from "../components/Loading";
 
 const Main = () => {
   const { handleSearch, weatherForecast, loading, error } = RequestApi();
@@ -12,13 +20,14 @@ const Main = () => {
     const fetchDate = async () => {
       const { response } = await handleSearch(api);
       console.log(response);
-      setCity("")
+      setCity("");
     };
     fetchDate();
   };
 
   return (
     <section>
+      <h1>Check the weather of the city: </h1>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -26,23 +35,24 @@ const Main = () => {
           onChange={({ target }) => setCity(target.value)}
           required
         />
-        <button>Enter</button>
+        <button>
+          <FaMagnifyingGlass />
+        </button>
       </form>
-      {error && <p>Não</p>}
-      {loading && <p>Carregando...</p>}
-      {weatherForecast === undefined && !loading && <p>City not found</p>}
+      {error && alert("Error")}
+      {loading && <Loading />}
+      {weatherForecast === undefined && !loading && <p className="notfoud">City not found :( </p>}
       {weatherForecast ? (
         <ul>
           <li>
+            <FaLocationDot />
             <p>{weatherForecast.name}</p>
           </li>
           <li>
-            <p>{weatherForecast.main.temp}</p>
+            <p>{weatherForecast.main.temp} ºC</p>
           </li>
           <li>
             <p>{weatherForecast.weather[0].description}</p>
-          </li>
-          <li>
             <img
               src={`http://openweathermap.org/img/wn/${weatherForecast.weather[0].icon}.png`}
               alt=""
@@ -50,11 +60,11 @@ const Main = () => {
           </li>
           <li>
             <FaDroplet />
-            <p>{weatherForecast.main.humidity}%</p>
+            <p>{weatherForecast.main.humidity} %</p>
           </li>
           <li>
             <FaWind />
-            <p>{weatherForecast.wind.speed}km/h</p>
+            <p>{weatherForecast.wind.speed} km/h</p>
           </li>
         </ul>
       ) : null}
